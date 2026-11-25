@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="menu.css?v=3">
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body class="menu">
+    <header>
+        <a class="logo" href="index.html"><span>🍽️</span><span id="restaurantName">Gourmet</span></a>
+        <div class="header-right">
+            <div class="header-actions"><button class="theme-btn" id="themeBtn">🌙</button><button class="lang-btn" id="langBtn">عربي</button></div>
+            <div class="cart-icon" id="cartIcon">🛒 <span class="cart-badge" id="cartBadge">0</span></div>
+        </div>
+    </header>
+
+    <!-- STEP 2: category bar (food left, drinks right) — full width under the header -->
+    <nav class="cat-bar" id="catBar" hidden>
+        <div class="cat-side" id="catLeft"></div>
+        <div class="cat-side" id="catRight"></div>
+    </nav>
+
+    <main class="container">
+        <!-- STEP 1: eat or drink -->
+        <section class="choice" id="choiceView">
+            <button class="choice-box" data-group="food">
+                <span class="choice-icon">🍔</span>
+                <span data-i18n="eat"></span>
+            </button>
+            <button class="choice-box" data-group="drinks">
+                <span class="choice-icon">🥤</span>
+                <span data-i18n="drink"></span>
+            </button>
+        </section>
+
+        <div class="menu-head" id="menuHead" hidden>
+            <button class="back-btn" id="backBtn" data-i18n="stepBack"></button>
+            <h2 id="categoryTitle"></h2>
+        </div>
+
+        <!-- STEP 2: category boxes for the chosen group -->
+        <section class="choice" id="pickView" hidden></section>
+
+        <div class="menu-grid" id="menuGrid"></div>
+    </main>
+
+    <!-- CART MODAL -->
+    <div class="overlay" id="cartOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 data-i18n="cartTitle"></h2>
+                <button class="close-btn" id="closeCart">✕</button>
+            </div>
+            <div id="cartItems"></div>
+            <div class="cart-total"><span data-i18n="total"></span><span id="cartTotal"></span></div>
+            <button class="primary-btn" id="checkoutBtn" data-i18n="checkout"></button>
+            <button class="secondary-btn" id="clearCart" data-i18n="clear"></button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="config.js"></script>
+    <script src="data.js"></script>
+    <script src="i18n.js"></script>
+    <script src="script.js?v=3"></script>
+</body>
+</html>

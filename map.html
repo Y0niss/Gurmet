@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Branches</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body>
+    <header>
+        <a class="logo" href="index.html"><span>🍽️</span><span id="restaurantName">Gourmet</span></a>
+        <div class="header-right">
+            <div class="header-actions"><button class="theme-btn" id="themeBtn">🌙</button><button class="lang-btn" id="langBtn">عربي</button></div>
+        </div>
+    </header>
+
+    <main class="map-page">
+        <h2 data-i18n="mapTitle"></h2>
+        <form class="map-search" id="mapSearch">
+            <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder">
+            <button class="primary-btn" type="submit" data-i18n="search"></button>
+        </form>
+        <div class="map-layout">
+            <ul class="results" id="results"></ul>
+            <div id="map"></div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="config.js"></script>
+    <script src="i18n.js"></script>
+    <script src="map.js"></script>
+</body>
+</html>

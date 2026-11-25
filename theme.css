@@ -1,0 +1,79 @@
+/* ===== DARK MODE (applies when <html data-theme="dark">) ===== */
+
+/* Header buttons */
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.theme-btn {
+    background: transparent;
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, .4);
+    padding: .3rem .7rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+.theme-btn:hover { border-color: #f7971e; }
+
+/* Base */
+html[data-theme="dark"] body { background: #12121f; color: #e8e8f0; }
+html[data-theme="dark"] header,
+html[data-theme="dark"] .home-header { background: #0b0b16; box-shadow: 0 1px 0 #24243a; }
+
+/* ===== HOME ===== */
+html[data-theme="dark"] .home,
+html[data-theme="dark"] .menu { background: #12121f; }
+html[data-theme="dark"] .hero {
+    background: linear-gradient(rgba(10, 10, 20, .6), rgba(10, 10, 20, .6)),
+                url("images/hero.png") center / cover no-repeat fixed,
+                #12121f;
+}
+html[data-theme="dark"] .hero-title h1,
+html[data-theme="dark"] .popular-title { color: #fff; }
+html[data-theme="dark"] .tagline { color: #ddd; }
+html[data-theme="dark"] .hours { color: #fff; }
+html[data-theme="dark"] .popular-card { color: #fff; }
+html[data-theme="dark"] .order-btn { background: #fff; color: #1a1a2e; }
+html[data-theme="dark"] .order-btn:hover { background: #f7971e; color: #fff; }
+html[data-theme="dark"] .branches-btn { background: #1a1a2e; color: #fff; box-shadow: inset 0 0 0 2px #fff; }
+html[data-theme="dark"] .branches-btn:hover { background: #fff; color: #1a1a2e; }
+
+/* ===== MENU ===== */
+html[data-theme="dark"] .menu .cat-bar { background: #12121f; box-shadow: 0 6px 16px rgba(0, 0, 0, .4); }
+html[data-theme="dark"] .menu .choice-box,
+html[data-theme="dark"] .menu .pick-box { background: #1c1c30; color: #fff; box-shadow: 0 12px 30px rgba(0, 0, 0, .4); }
+html[data-theme="dark"] .menu .choice-box:hover,
+html[data-theme="dark"] .menu .pick-box:hover { background: #f7971e; color: #fff; }
+html[data-theme="dark"] .menu .back-btn { background: #1c1c30; color: #fff; }
+html[data-theme="dark"] .menu .back-btn:hover { background: #f7971e; }
+html[data-theme="dark"] .menu .tab { background: #1c1c30; color: #eee; box-shadow: none; }
+html[data-theme="dark"] .menu .tab.active,
+html[data-theme="dark"] .menu .tab:hover { background: #f7971e; color: #fff; }
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .modal,
+html[data-theme="dark"] .qr-box { background: #1c1c30; color: #eee; box-shadow: 0 10px 28px rgba(0, 0, 0, .4); }
+html[data-theme="dark"] .card h3,
+html[data-theme="dark"] .container h2,
+html[data-theme="dark"] .modal-header h2 { color: #fff; }
+html[data-theme="dark"] .specs { color: #aaa; }
+html[data-theme="dark"] .card-img { background: #2a2a40; }
+html[data-theme="dark"] .card select { background: #12121f; color: #eee; border-color: #3a3a55; }
+html[data-theme="dark"] .menu .primary-btn { background: #f7971e; color: #fff; }
+html[data-theme="dark"] .menu .primary-btn:hover { background: #fff; color: #1a1a2e; box-shadow: inset 0 0 0 2px #f7971e; }
+html[data-theme="dark"] .cart-line { border-color: #2d2d45; }
+html[data-theme="dark"] .cart-total { color: #fff; }
+html[data-theme="dark"] .qty button { background: #2d2d45; color: #fff; }
+html[data-theme="dark"] .close-btn { color: #aaa; }
+html[data-theme="dark"] .toast { background: #1f8a4c; }
+
+/* ===== MAP ===== */
+html[data-theme="dark"] .map-page h2 { color: #fff; }
+html[data-theme="dark"] .map-search input { background: #1c1c30; color: #eee; border-color: #3a3a55; }
+html[data-theme="dark"] .results { background: #1c1c30; }
+html[data-theme="dark"] .results li { border-color: #2d2d45; color: #eee; }
+html[data-theme="dark"] .results li:hover { background: #2a2a40; }
+html[data-theme="dark"] .results li.active { background: #f7971e; color: #fff; }
+html[data-theme="dark"] .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.85); }
+
+/* ===== ORDER ===== */
+html[data-theme="dark"] .container.narrow h2 { color: #fff; }
+html[data-theme="dark"] .qr-box canvas { background: #fff; padding: 8px; border-radius: 8px; }

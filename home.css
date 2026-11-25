@@ -1,0 +1,214 @@
+/* ===== HOME (welcome) — fluid layout, fits every screen without scrolling ===== */
+.home {
+    --hdr: 90px;
+    font-family: "Poppins", sans-serif;
+    background: #f5efe6;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+/* Header: navy bar */
+.home-header {
+    height: var(--hdr);
+    background: #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(16px, 4.2vw, 60px);
+}
+.home-logo { color: #fff; font-size: clamp(20px, 2vw, 28px); font-weight: 700; }
+
+/* Hero: photo background fills the rest of the screen */
+.hero {
+    position: relative;
+    box-sizing: border-box;
+    height: calc(100vh - var(--hdr));
+    height: calc(100dvh - var(--hdr));
+    display: flex;
+    flex-direction: column;
+    padding: clamp(20px, 5vh, 60px) clamp(16px, 4.2vw, 60px) clamp(16px, 3vh, 30px);
+    background: url("images/hero.png") center / cover no-repeat, #f5efe6;
+    overflow: hidden;
+}
+
+/* Title block (top) */
+.hero-title { text-align: start; }
+.hero-title h1 {
+    margin: 0;
+    font-size: clamp(34px, 4.5vw, 64px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1a1a2e;
+}
+.tagline {
+    margin: clamp(4px, 1vh, 12px) 0 0;
+    font-size: clamp(15px, 1.6vw, 22px);
+    color: #2e2e2e;
+}
+.hours {
+    margin: 0;
+    font-size: clamp(13px, 1.4vw, 20px);
+    font-weight: 500;
+    color: #1a1a2e;
+}
+
+/* Order Now: centred in the hero */
+.order-btn {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    transform: translate(-50%, -50%);
+    width: clamp(170px, 22vw, 220px);
+    height: clamp(48px, 6vh, 60px);
+    line-height: clamp(48px, 6vh, 60px);
+    border-radius: 30px;
+    background: #1a1a2e;
+    color: #fff;
+    font-size: clamp(16px, 1.4vw, 20px);
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .35);
+    transition: background .2s, color .2s;
+}
+
+/* Bottom block: popular + branches button */
+.home-bottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.6vh, 16px);
+}
+.popular-title {
+    margin: 0;
+    font-size: clamp(22px, 2.2vw, 32px);
+    font-weight: 700;
+    color: #1a1a2e;
+    text-align: start;
+}
+.popular-track {
+    display: flex;
+    gap: clamp(12px, 2vw, 30px);
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+    padding-bottom: 4px;
+}
+.popular-track.dragging { cursor: grabbing; }
+.popular-card {
+    flex: 0 0 clamp(190px, 24vw, 340px);
+    color: #1a1a2e;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+.popular-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 17 / 10;
+    border-radius: 16px;
+    object-fit: cover;
+    background: #e8e3de;
+    pointer-events: none;
+    -webkit-user-drag: none;
+}
+.popular-card h3 {
+    margin: clamp(8px, 1.6vh, 20px) 0 0;
+    font-size: clamp(15px, 1.4vw, 20px);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Footer row: Our Branches button at the end (right in LTR, left in RTL) */
+.home-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+.branches-btn {
+    width: clamp(180px, 22vw, 284px);
+    height: 45px;
+    line-height: 45px;
+    border-radius: 30px;
+    background: #fff;
+    color: #1a1a2e;
+    font-size: clamp(15px, 1.4vw, 20px);
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .3);
+    transition: background .2s, color .2s;
+}
+
+/* ===== ARABIC (RTL) — flex and text-align:start mirror the layout automatically ===== */
+[dir="rtl"] .home-header { direction: ltr; }
+
+/* Hover: swap colours */
+.order-btn:hover { background: #fff; color: #1a1a2e; }
+.branches-btn:hover { background: #1a1a2e; color: #fff; }
+
+/* ===== TABLET & SMALL SCREENS ===== */
+@media (max-width: 800px) {
+    .home { --hdr: 72px; }
+    .home-logo { font-size: 20px; }
+    .hero-title h1 { font-size: clamp(30px, 8.5vw, 44px); }
+    .order-btn { top: 40%; }
+    .popular-card { flex-basis: min(62vw, 300px); }
+    .branches-btn { width: min(70vw, 260px); }
+}
+
+/* ===== SHORT SCREENS (phones in landscape) — keep everything on one screen ===== */
+@media (max-height: 520px) {
+    .hero { padding-top: 12px; padding-bottom: 10px; }
+    .hero-title h1 { font-size: 26px; }
+    .tagline { font-size: 14px; }
+    .hours { font-size: 12px; }
+    .popular-title { font-size: 18px; }
+    .popular-card img { aspect-ratio: 2.4 / 1; }
+    .popular-card h3 { font-size: 13px; margin-top: 4px; }
+    .order-btn { top: 45%; height: 40px; line-height: 40px; font-size: 14px; }
+    .branches-btn { height: 36px; line-height: 36px; font-size: 13px; }
+}
+
+/* ===== MAP PAGE ===== */
+.map-page { padding: 24px; max-width: 1400px; margin: 0 auto; }
+.map-search { display: flex; gap: 10px; margin-bottom: 16px; }
+.map-search input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+}
+.map-search .primary-btn { width: auto; padding: 12px 24px; }
+.map-layout { display: grid; grid-template-columns: 320px 1fr; gap: 16px; }
+#map { height: 600px; border-radius: 16px; }
+.results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 600px;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 16px;
+}
+.results li {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 14px;
+}
+.results li:hover { background: #fff7ec; }
+.results li.active { background: var(--accent); color: #fff; font-weight: 600; }
+.results li.empty { cursor: default; color: #888; }
+.pin { font-size: 26px; text-align: center; line-height: 1; transition: transform .15s; }
+.pin-active { font-size: 34px; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .4)); }
+
+@media (max-width: 800px) {
+    .map-layout { grid-template-columns: 1fr; }
+    #map { height: 420px; }
+    .results { max-height: 240px; }
+}
