@@ -79,7 +79,8 @@ html[data-theme="dark"] .container.narrow h2 { color: #fff; }
 html[data-theme="dark"] .qr-box canvas { background: #fff; padding: 8px; border-radius: 8px; }
 
 /* ===== LOGO (light / dark) ===== */
-.logo-img { height: 36px; width: auto; display: block; }
+.logo-img { height: 64px; width: auto; display: block; }
+@media (max-width: 800px) { .logo-img { height: 52px; } }
 .logo-dark { display: none; }
 html[data-theme="dark"] .logo-light { display: none; }
 html[data-theme="dark"] .logo-dark { display: block; }
