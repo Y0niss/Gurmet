@@ -85,3 +85,6 @@ html[data-theme="dark"] .qr-box canvas { background: #fff; padding: 8px; border-
 html[data-theme="dark"] .logo-light { display: none; }
 html[data-theme="dark"] .logo-dark { display: block; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* order page: waiter text readable in dark mode */
+html[data-theme="dark"] .ask-waiter { color: #fff; }
