@@ -116,7 +116,7 @@ function renderCart() {
 function renderBar() {
     const btn = key => {
         const c = CATEGORIES[key];
-        return `<button class="tab ${key === activeCategory ? "active" : ""}" data-cat="${key}">
+        return `<button class="tab ${key === activeCategory ? "active" : ""}" data-cat="${key}" style="--i:${[...FOOD, ...DRINKS].indexOf(key)}">
                     ${c.icon} ${pick(c, "label")}</button>`;
     };
     document.getElementById("catLeft").innerHTML = FOOD.map(btn).join("");
@@ -187,7 +187,7 @@ function renderPick(group) {
                 </button>`;
     }).join("");
     pickView.querySelectorAll(".pick-box").forEach(b =>
-        b.addEventListener("click", () => go({ view: "menu", cat: b.dataset.cat })));
+        b.addEventListener("click", () => go({ view: "menu", cat: b.dataset.cat, intro: true })));
 }
 
 function render(state) {
@@ -197,6 +197,9 @@ function render(state) {
     [choiceView, pickView].forEach(el => { if (el !== target) fadeOut(el); });
 
     if (state.view === "pick") renderPick(state.group);
+    if (state.view === "choice") {
+        choiceView.querySelectorAll(".choice-box").forEach(o => o.classList.remove("grow", "fading"));
+    }
     if (target) fadeIn(target);
 
     if (state.view === "menu") {
@@ -206,6 +209,10 @@ function render(state) {
         menuHead.hidden = false;
         renderBar();
         renderMenu();
+        if (state.intro) {
+            catBar.classList.add("intro");
+            setTimeout(() => catBar.classList.remove("intro"), 1400);
+        }
     } else {
         catBar.hidden = true;
         catBar.classList.remove("visible");
@@ -213,7 +220,7 @@ function render(state) {
         // شاشة الأقسام ليها زرار رجوع وعنوان، شاشة الاختيار لأ
         menuHead.hidden = state.view !== "pick";
         if (state.view === "pick") {
-            document.getElementById("categoryTitle").textContent = state.group === "drinks" ? t("drink") : t("eat");
+            document.getElementById("categoryTitle").textContent = state.group === "drinks" ? t("askDrink") : t("askEat");
         }
     }
 }
@@ -224,7 +231,14 @@ function go(state) {
 }
 
 document.querySelectorAll(".choice-box[data-group]").forEach(b =>
-    b.addEventListener("click", () => go({ view: "pick", group: b.dataset.group })));
+    b.addEventListener("click", () => {
+        if (b.classList.contains("grow")) return;
+        // الزرار يكبر، وبعدين الاتنين يعملوا fade out، وبعدها ننتقل
+        b.classList.add("grow");
+        choiceView.querySelectorAll(".choice-box").forEach(o => { if (o !== b) o.classList.add("fading"); });
+        setTimeout(() => b.classList.add("fading"), 200);
+        setTimeout(() => go({ view: "pick", group: b.dataset.group }), 520);
+    }));
 
 document.getElementById("backBtn").addEventListener("click", () => {
     if (history.state && history.state.view !== "choice") history.back();

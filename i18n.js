@@ -34,6 +34,9 @@ const STRINGS = {
         noResults: "No results found",
         backHome: "← Home",
         eat: "Eat",
+        welcome: "Welcome, would you like...",
+        askEat: "What would you like to eat?",
+        askDrink: "What would you like to drink?",
         drink: "Drink",
         stepBack: "← Back"
     },
@@ -71,6 +74,9 @@ const STRINGS = {
         noResults: "مفيش نتايج",
         backHome: "الرئيسية →",
         eat: "تاكل",
+        welcome: "أهلاً بيك، عايز...",
+        askEat: "عايز تاكل إيه؟",
+        askDrink: "عايز تشرب إيه؟",
         drink: "تشرب",
         stepBack: "رجوع →"
     }
