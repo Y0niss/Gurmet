@@ -258,6 +258,7 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
 
 // ===== INIT =====
 applyLang();
+loadMenu(); // يحمّل الأصناف من الشيت
 history.replaceState({ view: "choice" }, "");
 render({ view: "choice" });
 renderBadge();

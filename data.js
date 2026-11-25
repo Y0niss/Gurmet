@@ -348,20 +348,24 @@ function buildProducts(head, rows) {
 // بيحمل المنيو من الشيت، ولو فشل يفضل على الأصناف الاحتياطية
 function loadMenu() {
     return new Promise(resolve => {
-        const cb = "gourmetSheet" + Date.now();
+        window.google = window.google || {};
+        google.visualization = google.visualization || {};
+        google.visualization.Query = google.visualization.Query || {};
+
         const script = document.createElement("script");
-        const finish = () => {
+        let done = false;
+        const finish = reason => {
+            if (done) return;
+            done = true;
+            if (reason) console.warn("Menu sheet " + reason + ", using built-in menu");
             clearTimeout(timer);
-            delete window[cb];
+            google.visualization.Query.setResponse = () => {};
             script.remove();
             resolve();
         };
-        const timer = setTimeout(() => {
-            console.warn("Menu sheet timed out, using built-in menu");
-            finish();
-        }, 8000);
+        const timer = setTimeout(() => finish("timed out"), 8000);
 
-        window[cb] = data => {
+        google.visualization.Query.setResponse = data => {
             try {
                 const head = data.table.cols.map(c => (c.label || "").trim());
                 const rows = data.table.rows.map(r =>
@@ -374,12 +378,9 @@ function loadMenu() {
             finish();
         };
 
-        script.onerror = () => {
-            console.warn("Menu sheet not reachable, using built-in menu");
-            finish();
-        };
+        script.onerror = () => finish("not reachable");
         script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` +
-                     `?tqx=out:json;responseHandler:${cb}&sheet=${encodeURIComponent(SHEET_TAB)}&t=${Date.now()}`;
+                     `?tqx=out:json&sheet=${encodeURIComponent(SHEET_TAB)}&t=${Date.now()}`;
         document.head.appendChild(script);
     });
 }
