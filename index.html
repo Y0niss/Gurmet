@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="theme.css">
+    <script src="theme.js"></script>
+</head>
+<body class="home">
+    <header class="home-header">
+        <span class="home-logo" id="restaurantName">Gourmet</span>
+        <div class="header-actions"><button class="theme-btn" id="themeBtn">🌙</button><button class="lang-btn" id="langBtn">عربي</button></div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-title">
+            <h1 data-i18n="welcomeTitle"></h1>
+            <p class="tagline" data-i18n="tagline"></p>
+            <p class="hours" data-i18n="hours"></p>
+        </div>
+
+        <a class="order-btn" href="menu.html" data-i18n="orderNow"></a>
+
+        <div class="home-bottom">
+            <h2 class="popular-title" data-i18n="popular"></h2>
+            <div class="popular-track" id="popularTrack"></div>
+            <div class="home-footer">
+                <a class="branches-btn" href="map.html" data-i18n="branches"></a>
+            </div>
+        </div>
+    </section>
+
+    <script src="config.js"></script>
+    <script src="data.js"></script>
+    <script src="i18n.js"></script>
+    <script src="home.js"></script>
+</body>
+</html>
