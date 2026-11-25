@@ -1,370 +1,268 @@
 // ===== STATE =====
-let currentSection = 'home';
-let currentItems = [];
+const FOOD = ["burgers", "pizza", "pasta", "salads"];
+const DRINKS = ["soft-drinks", "hot-drinks", "juices"];
+let activeCategory = FOOD[0];
+const CART_KEY = "gourmet-cart";
+const MAX_QTY = 99;
 
-// ===== DOM REFS =====
-const sections = document.querySelectorAll('.section');
-const cartOverlay = document.getElementById('cartOverlay');
-const cartItemsEl = document.getElementById('cartItems');
-const cartTotalEl = document.getElementById('cartTotal');
-const cartBadge = document.getElementById('cartBadge');
-const toast = document.getElementById('toast');
-let toastTimeout;
+// ===== HELPERS =====
+const money = n => `${n} ${CONFIG.currencyLabel}`;
 
-// ===== NAVIGATION =====
-function showSection(sectionId) {
-    sections.forEach(s => s.classList.remove('active'));
-    const target = document.getElementById(sectionId);
-    if (target) target.classList.add('active');
-    currentSection = sectionId;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ===== RENDER SUBCATEGORIES =====
-function renderSubcategories(category) {
-    const container = category === 'food' 
-        ? document.getElementById('foodSubcategories') 
-        : document.getElementById('drinkSubcategories');
-    
-    const subCategories = [...new Set(
-        menuItems
-            .filter(item => item.category === category)
-            .map(item => item.subCategory)
-    )];
-
-    const subCategoryNames = {
-        'burgers': { icon: '🍔', label: 'Burgers' },
-        'pizza': { icon: '🍕', label: 'Pizza' },
-        'pasta': { icon: '🍝', label: 'Pasta' },
-        'salads': { icon: '🥗', label: 'Salads' },
-        'soft-drinks': { icon: '🥤', label: 'Soft Drinks' },
-        'hot-drinks': { icon: '☕', label: 'Hot Drinks' },
-        'juices': { icon: '🧃', label: 'Juices' }
-    };
-
-    container.innerHTML = subCategories.map(sub => {
-        const count = menuItems.filter(item => item.subCategory === sub).length;
-        const info = subCategoryNames[sub] || { icon: '📦', label: sub };
-        return `
-            <div class="subcategory-card" data-subcategory="${sub}">
-                <span class="sub-icon">${info.icon}</span>
-                <h3>${info.label}</h3>
-                <div class="item-count">${count} items</div>
-            </div>
-        `;
-    }).join('');
-
-    // Add click listeners
-    container.querySelectorAll('.subcategory-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const sub = card.dataset.subcategory;
-            showItemsBySubCategory(sub);
-        });
-    });
-}
-
-// ===== RENDER ITEMS =====
-function showItemsBySubCategory(subCategory) {
-    const items = menuItems.filter(item => item.subCategory === subCategory);
-    currentItems = items;
-    
-    const title = document.getElementById('itemsListTitle');
-    const subNames = {
-        'burgers': '🍔 Burgers',
-        'pizza': '🍕 Pizza',
-        'pasta': '🍝 Pasta',
-        'salads': '🥗 Salads',
-        'soft-drinks': '🥤 Soft Drinks',
-        'hot-drinks': '☕ Hot Drinks',
-        'juices': '🧃 Juices'
-    };
-    title.textContent = subNames[subCategory] || subCategory;
-    
-    renderItems(items);
-    showSection('items-list');
-}
-
-function renderItems(items) {
-    const grid = document.getElementById('itemsGrid');
-    grid.innerHTML = items.map(item => `
-        <div class="item-card" data-id="${item.id}">
-            <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300x180?text=No+Image'">
-            <div class="item-info">
-                <div class="item-name">${item.name}</div>
-                <div class="item-price">$${item.price.toFixed(2)}</div>
-                <div class="item-rating">⭐ ${item.rating}</div>
-                ${item.isPopular ? '<div class="popular-badge">🔥 Popular</div>' : ''}
-                <button class="add-to-cart-btn" data-id="${item.id}">🛒 Add to Cart</button>
-            </div>
-        </div>
-    `).join('');
-
-    // Item card click -> detail
-    grid.querySelectorAll('.item-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-            if (e.target.classList.contains('add-to-cart-btn')) return;
-            const id = parseInt(card.dataset.id);
-            showDetail(id);
-        });
-    });
-
-    // Add to cart buttons
-    grid.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = parseInt(btn.dataset.id);
-            addToCart(id);
-        });
-    });
-}
-
-// ===== DETAIL =====
-function showDetail(id) {
-    const item = menuItems.find(i => i.id === id);
-    if (!item) return;
-
-    const container = document.getElementById('detailContainer');
-    container.innerHTML = `
-        <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/700x400?text=No+Image'">
-        <div class="detail-name">${item.name}</div>
-        <div class="detail-category">${item.subCategory} • ${item.category}</div>
-        <div class="detail-price">$${item.price.toFixed(2)}</div>
-        <div class="detail-rating">⭐ ${item.rating} / 5.0</div>
-        <div class="detail-description">${item.description}</div>
-        ${item.isPopular ? '<div class="popular-badge" style="margin-bottom:1rem;">🔥 Popular Item</div>' : ''}
-        <button class="detail-add-btn" data-id="${item.id}">🛒 Add to Cart - $${item.price.toFixed(2)}</button>
-    `;
-
-    container.querySelector('.detail-add-btn').addEventListener('click', () => {
-        addToCart(item.id);
-    });
-
-    // Back button
-    document.getElementById('detailBackBtn').onclick = () => {
-        if (currentItems.length > 0) {
-            // Go back to items list
-            const sub = currentItems[0]?.subCategory;
-            if (sub) showItemsBySubCategory(sub);
-        } else {
-            showSection('home');
-        }
-    };
-
-    showSection('detail');
-}
-
-// ===== CART FUNCTIONS =====
 function getCart() {
-    return JSON.parse(localStorage.getItem('cart')) || [];
+    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+    catch (e) { return []; }
 }
 
 function saveCart(cart) {
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartBadge();
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    renderBadge();
 }
 
-function addToCart(id) {
+function findProduct(code) {
+    return PRODUCTS.find(p => p.code === code);
+}
+
+// الكود اللي بيتحول لـ QR: Pi01-0-02  (صنف - رقم الحجم - الكمية)
+function orderCode() {
+    return getCart()
+        .map(i => `${i.code}-${i.size}-${String(i.qty).padStart(2, "0")}`)
+        .join("|");
+}
+
+function cartTotal() {
+    return getCart().reduce((sum, i) => {
+        const p = findProduct(i.code);
+        return sum + p.sizes[i.size].price * i.qty;
+    }, 0);
+}
+
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => t.classList.remove("show"), 2000);
+}
+
+// ===== CART =====
+function addItem(code, size) {
     const cart = getCart();
-    const existing = cart.find(item => item.id === id);
-    
+    const key = `${code}-${size}`;
+    const existing = cart.find(i => i.key === key);
     if (existing) {
-        existing.quantity += 1;
-    } else {
-        const item = menuItems.find(i => i.id === id);
-        cart.push({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            quantity: 1,
-            image: item.image
-        });
-    }
-    
+        if (existing.qty >= MAX_QTY) return showToast(t("max"));
+        existing.qty++;
+    } else cart.push({ key, code, size, qty: 1 });
     saveCart(cart);
-    showToast(`${existing ? 'Updated' : 'Added'} ${menuItems.find(i => i.id === id).name} to cart! ✅`);
+    const p = findProduct(code);
+    showToast(`${t("added")}: ${pick(p, "name")} ✅`);
 }
 
-function removeFromCart(id) {
+function changeQty(key, delta) {
     let cart = getCart();
-    cart = cart.filter(item => item.id !== id);
-    saveCart(cart);
-    renderCart();
-    showToast('Item removed from cart 🗑️');
-}
-
-function updateQuantity(id, change) {
-    const cart = getCart();
-    const item = cart.find(i => i.id === id);
+    const item = cart.find(i => i.key === key);
     if (!item) return;
-    
-    item.quantity += change;
-    if (item.quantity <= 0) {
-        removeFromCart(id);
-        return;
-    }
-    
+    if (item.qty + delta > MAX_QTY) return showToast(t("max"));
+    item.qty += delta;
+    if (item.qty <= 0) cart = cart.filter(i => i.key !== key);
     saveCart(cart);
     renderCart();
 }
 
-function clearCart() {
-    if (confirm('Are you sure you want to clear your cart?')) {
-        saveCart([]);
-        renderCart();
-        showToast('Cart cleared 🗑️');
-    }
+function removeItem(key) {
+    saveCart(getCart().filter(i => i.key !== key));
+    renderCart();
 }
 
-function getCartTotal() {
-    const cart = getCart();
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+function renderBadge() {
+    const count = getCart().reduce((s, i) => s + i.qty, 0);
+    const badge = document.getElementById("cartBadge");
+    badge.textContent = count;
+    badge.style.display = count ? "block" : "none";
 }
 
-function getCartCount() {
-    const cart = getCart();
-    return cart.reduce((count, item) => count + item.quantity, 0);
-}
-
-function updateCartBadge() {
-    const count = getCartCount();
-    cartBadge.textContent = count;
-    cartBadge.style.display = count > 0 ? 'block' : 'none';
-}
-
-// ===== RENDER CART MODAL =====
 function renderCart() {
     const cart = getCart();
-    
-    if (cart.length === 0) {
-        cartItemsEl.innerHTML = `
-            <div style="text-align:center;padding:2rem;color:#888;">
-                <div style="font-size:3rem;margin-bottom:1rem;">🛒</div>
-                <p>Your cart is empty</p>
-                <p style="font-size:0.9rem;">Start adding some delicious items!</p>
-            </div>
-        `;
-        cartTotalEl.textContent = '$0.00';
-        return;
+    const el = document.getElementById("cartItems");
+    if (!cart.length) {
+        el.innerHTML = `<p class="empty">${t("empty")}</p>`;
+    } else {
+        el.innerHTML = cart.map(i => {
+            const p = findProduct(i.code);
+            const s = p.sizes[i.size];
+            return `
+            <div class="cart-line">
+                <div>
+                    <div class="line-name">${pick(p, "name")} <small>(${pick(s, "label")})</small></div>
+                </div>
+                <div class="qty">
+                    <button class="remove-btn" data-key="${i.key}" data-remove="1" aria-label="Remove">✕</button>
+                    <button data-key="${i.key}" data-d="-1">−</button>
+                    <span>${i.qty}</span>
+                    <button data-key="${i.key}" data-d="1">+</button>
+                </div>
+                <div class="line-price">${money(s.price * i.qty)}</div>
+            </div>`;
+        }).join("");
+        el.querySelectorAll("button[data-key]").forEach(b =>
+            b.addEventListener("click", () => b.dataset.remove
+                ? removeItem(b.dataset.key)
+                : changeQty(b.dataset.key, Number(b.dataset.d))));
     }
-
-    cartItemsEl.innerHTML = cart.map(item => `
-        <div class="cart-item">
-            <div class="item-info">
-                <div class="item-name">${item.name}</div>
-                <div class="item-price">$${(item.price * item.quantity).toFixed(2)}</div>
-            </div>
-            <div class="item-quantity">
-                <button class="qty-btn" data-id="${item.id}" data-change="-1">−</button>
-                <span style="min-width:24px;text-align:center;">${item.quantity}</span>
-                <button class="qty-btn" data-id="${item.id}" data-change="1">+</button>
-                <button class="remove-btn" data-id="${item.id}">✕</button>
-            </div>
-        </div>
-    `).join('');
-
-    // Quantity buttons
-    cartItemsEl.querySelectorAll('.qty-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = parseInt(btn.dataset.id);
-            const change = parseInt(btn.dataset.change);
-            updateQuantity(id, change);
-        });
-    });
-
-    // Remove buttons
-    cartItemsEl.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = parseInt(btn.dataset.id);
-            removeFromCart(id);
-        });
-    });
-
-    cartTotalEl.textContent = `$${getCartTotal().toFixed(2)}`;
+    document.getElementById("cartTotal").textContent = money(cartTotal());
 }
 
-// ===== TOAST =====
-function showToast(message, isError = false) {
-    toast.textContent = message;
-    toast.className = 'toast';
-    if (isError) toast.classList.add('error');
-    
-    clearTimeout(toastTimeout);
-    // Force reflow
-    void toast.offsetWidth;
-    toast.classList.add('show');
-    
-    toastTimeout = setTimeout(() => {
-        toast.classList.remove('show');
-    }, 2500);
+// ===== CATEGORY BAR (food on the left, drinks on the right) =====
+function renderBar() {
+    const btn = key => {
+        const c = CATEGORIES[key];
+        return `<button class="tab ${key === activeCategory ? "active" : ""}" data-cat="${key}">
+                    ${c.icon} ${pick(c, "label")}</button>`;
+    };
+    document.getElementById("catLeft").innerHTML = FOOD.map(btn).join("");
+    document.getElementById("catRight").innerHTML = DRINKS.map(btn).join("");
+    document.querySelectorAll("#catBar .tab").forEach(b =>
+        b.addEventListener("click", () => {
+            activeCategory = b.dataset.cat;
+            renderBar();
+            renderMenu();
+        }));
 }
 
-// ===== EVENT LISTENERS =====
+// ===== MENU GRID =====
+function renderMenu() {
+    const cat = CATEGORIES[activeCategory];
+    document.getElementById("categoryTitle").textContent = `${cat.icon} ${pick(cat, "label")}`;
+    const grid = document.getElementById("menuGrid");
+    const items = PRODUCTS.filter(p => p.category === activeCategory);
 
-// Navigation buttons
-document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const section = btn.dataset.section;
-        if (section === 'home') {
-            showSection('home');
-        } else if (section === 'food-categories') {
-            renderSubcategories('food');
-            showSection('food-categories');
-        } else if (section === 'drink-categories') {
-            renderSubcategories('drink');
-            showSection('drink-categories');
-        }
+    grid.innerHTML = items.map(p => `
+        <div class="card">
+            <img class="card-img" src="${p.image}" alt="${pick(p, "name")}">
+            <h3>${pick(p, "name")}</h3>
+            <p class="specs">${pick(p, "specs")}</p>
+            ${p.sizes.length > 1
+                ? `<select data-code="${p.code}">
+                    ${p.sizes.map((s, i) => `<option value="${i}">${pick(s, "label")} — ${money(s.price)}</option>`).join("")}
+                   </select>`
+                : `<div class="single-size">${money(p.sizes[0].price)}</div>
+                   <input type="hidden" data-code="${p.code}" value="0">`}
+            <button class="primary-btn" data-add="${p.code}">${t("addToOrder")}</button>
+        </div>`).join("");
+
+    grid.querySelectorAll("button[data-add]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const code = btn.dataset.add;
+            const size = Number(grid.querySelector(`[data-code="${code}"]`).value);
+            addItem(code, size);
+        });
     });
+}
+
+// ===== VIEWS =====
+// 1) choice: eat / drink  ->  2) pick: category boxes  ->  3) menu: bar + items
+// Back always goes ONE step (browser history).
+const choiceView = document.getElementById("choiceView");
+const pickView = document.getElementById("pickView");
+const catBar = document.getElementById("catBar");
+const menuHead = document.getElementById("menuHead");
+
+function fadeIn(el) {
+    el.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove("hide")));
+}
+
+function fadeOut(el) {
+    el.classList.add("hide");
+    setTimeout(() => { if (el.classList.contains("hide")) el.hidden = true; }, 350);
+}
+
+function renderPick(group) {
+    const keys = group === "drinks" ? DRINKS : FOOD;
+    pickView.innerHTML = keys.map(k => {
+        const c = CATEGORIES[k];
+        return `<button class="choice-box pick-box" data-cat="${k}">
+                    <span class="choice-icon">${c.icon}</span>
+                    <span>${pick(c, "label")}</span>
+                </button>`;
+    }).join("");
+    pickView.querySelectorAll(".pick-box").forEach(b =>
+        b.addEventListener("click", () => go({ view: "menu", cat: b.dataset.cat })));
+}
+
+function render(state) {
+    const target = state.view === "choice" ? choiceView
+                 : state.view === "pick" ? pickView
+                 : null;
+    [choiceView, pickView].forEach(el => { if (el !== target) fadeOut(el); });
+
+    if (state.view === "pick") renderPick(state.group);
+    if (target) fadeIn(target);
+
+    if (state.view === "menu") {
+        activeCategory = state.cat;
+        catBar.hidden = false;
+        catBar.classList.add("visible");
+        menuHead.hidden = false;
+        renderBar();
+        renderMenu();
+    } else {
+        catBar.hidden = true;
+        catBar.classList.remove("visible");
+        document.getElementById("menuGrid").innerHTML = "";
+        // شاشة الأقسام ليها زرار رجوع وعنوان، شاشة الاختيار لأ
+        menuHead.hidden = state.view !== "pick";
+        if (state.view === "pick") {
+            document.getElementById("categoryTitle").textContent = state.group === "drinks" ? t("drink") : t("eat");
+        }
+    }
+}
+
+function go(state) {
+    history.pushState(state, "");
+    render(state);
+}
+
+document.querySelectorAll(".choice-box[data-group]").forEach(b =>
+    b.addEventListener("click", () => go({ view: "pick", group: b.dataset.group })));
+
+document.getElementById("backBtn").addEventListener("click", () => {
+    if (history.state && history.state.view !== "choice") history.back();
 });
 
-// Category cards (home page)
-document.querySelectorAll('.category-card').forEach(card => {
-    card.addEventListener('click', () => {
-        const category = card.dataset.category;
-        if (category === 'food') {
-            renderSubcategories('food');
-            showSection('food-categories');
-        } else if (category === 'drink') {
-            renderSubcategories('drink');
-            showSection('drink-categories');
-        }
-    });
-});
+window.addEventListener("popstate", e => render(e.state || { view: "choice" }));
 
-// Back buttons
-document.querySelectorAll('.back-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const section = btn.dataset.section;
-        if (section === 'home') {
-            showSection('home');
-        } else {
-            showSection('home');
-        }
-    });
-});
+// ===== LANGUAGE BUTTON =====
+document.getElementById("langBtn").addEventListener("click", toggleLang);
 
-// Cart icon
-document.getElementById('cartIcon').addEventListener('click', () => {
+// ===== EVENTS =====
+document.getElementById("restaurantName").textContent = CONFIG.name;
+
+document.getElementById("cartIcon").addEventListener("click", () => {
     renderCart();
-    cartOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    document.getElementById("cartOverlay").classList.add("active");
 });
-
-// Close cart
-document.getElementById('closeCart').addEventListener('click', () => {
-    cartOverlay.classList.remove('active');
-    document.body.style.overflow = '';
+document.getElementById("closeCart").addEventListener("click", () =>
+    document.getElementById("cartOverlay").classList.remove("active"));
+document.getElementById("cartOverlay").addEventListener("click", e => {
+    if (e.target.id === "cartOverlay") e.target.classList.remove("active");
 });
-
-cartOverlay.addEventListener('click', (e) => {
-    if (e.target === cartOverlay) {
-        cartOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
+document.getElementById("clearCart").addEventListener("click", () => {
+    saveCart([]);
+    renderCart();
 });
-
-// Clear cart
-document.getElementById('clearCart').addEventListener('click', clearCart);
+document.getElementById("checkoutBtn").addEventListener("click", () => {
+    if (!getCart().length) return showToast(t("empty"));
+    window.location.href = `${CONFIG.orderPage}?o=${encodeURIComponent(orderCode())}`;
+});
 
 // ===== INIT =====
-updateCartBadge();
-showSection('home');
+applyLang();
+history.replaceState({ view: "choice" }, "");
+render({ view: "choice" });
+renderBadge();
+
+// لو الصفحة رجعت من الـ cache (زرار رجوع المتصفح) ارجع لشاشة الاختيار
+window.addEventListener("pageshow", e => {
+    if (e.persisted) render({ view: "choice" });
+});
