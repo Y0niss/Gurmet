@@ -1,5 +1,5 @@
 // ===== HOME PAGE =====
-const POPULAR_CODES = ["Bu01", "Pi01", "Pa01", "Pi02", "Pa06"];
+const POPULAR_CODES = ["0101", "0201", "0301", "0202", "0306"];
 
 document.getElementById("restaurantName").textContent = CONFIG.name;
 document.getElementById("langBtn").addEventListener("click", toggleLang);

@@ -22,7 +22,7 @@ function findProduct(code) {
     return PRODUCTS.find(p => p.code === code);
 }
 
-// الكود اللي بيتحول لـ QR: Pi01-0-02  (صنف - رقم الحجم - الكمية)
+// الكود اللي بيتحول لـ QR: 0201-0-02  (صنف - رقم الحجم - الكمية)
 function orderCode() {
     return getCart()
         .map(i => `${i.code}-${i.size}-${String(i.qty).padStart(2, "0")}`)
