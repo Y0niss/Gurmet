@@ -28,7 +28,7 @@
     display: flex;
     flex-direction: column;
     padding: clamp(20px, 5vh, 60px) clamp(16px, 4.2vw, 60px) clamp(16px, 3vh, 30px);
-    background: url("images/hero.png") center / cover no-repeat, #f5efe6;
+    background: url("https://res.cloudinary.com/o4uwuwtd/image/upload/v1795631551/hero.jpg") center / cover no-repeat, #f5efe6;
     overflow: hidden;
 }
 

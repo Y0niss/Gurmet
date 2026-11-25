@@ -24,7 +24,7 @@ html[data-theme="dark"] .home,
 html[data-theme="dark"] .menu { background: #12121f; }
 html[data-theme="dark"] .hero {
     background: linear-gradient(rgba(10, 10, 20, .6), rgba(10, 10, 20, .6)),
-                url("images/hero.png") center / cover no-repeat fixed,
+                url("https://res.cloudinary.com/o4uwuwtd/image/upload/v1795631551/hero.jpg") center / cover no-repeat fixed,
                 #12121f;
 }
 html[data-theme="dark"] .hero-title h1,
@@ -77,3 +77,10 @@ html[data-theme="dark"] .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg
 /* ===== ORDER ===== */
 html[data-theme="dark"] .container.narrow h2 { color: #fff; }
 html[data-theme="dark"] .qr-box canvas { background: #fff; padding: 8px; border-radius: 8px; }
+
+/* ===== LOGO (light / dark) ===== */
+.logo-img { height: 36px; width: auto; display: block; }
+.logo-dark { display: none; }
+html[data-theme="dark"] .logo-light { display: none; }
+html[data-theme="dark"] .logo-dark { display: block; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
